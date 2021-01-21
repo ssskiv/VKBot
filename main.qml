@@ -22,10 +22,10 @@ Window {
                 {
                     id:validstring
                     maximumLength: 20
-                    onEditingFinished:
+                    onEditingFinished://Когда нажат Enter:
                     {
-                        validstring.readOnly=true
-                        consout+="Validation String:"+validstring.text+'/n'
+                        validstring.readOnly=true // Поле перестает редактироваться.
+                        consout+="Validation String:"+validstring.text+'/n'//Строка добавляется в консоль.
                     }
                 }
             }
