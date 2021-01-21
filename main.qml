@@ -16,6 +16,19 @@ Window {
         Tab
         {
             title:"VK"
+            Rectangle
+            {
+                TextField
+                {
+                    id:validstring
+                    maximumLength: 20
+                    onEditingFinished:
+                    {
+                        validstring.readOnly=true
+                        consout+="Validation String:"+validstring.text+'/n'
+                    }
+                }
+            }
         }
 
         Tab
@@ -37,3 +50,5 @@ Window {
         }
     }
 }
+
+
