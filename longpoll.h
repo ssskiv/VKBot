@@ -9,6 +9,11 @@
 #include <QQmlComponent>
 #include <QLocale>
 #include <QVariant>
+#include <QJsonDocument>
+#include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonArray>
+
 class LongPoll: public QObject
 {
 
@@ -18,10 +23,22 @@ class LongPoll: public QObject
     QQmlComponent _component;
     QObject *_gui = _component.create();
     QNetworkAccessManager*_manager;
+    QString _server,_key,_ts;
+    enum LONGPOLL_EVENTS {
+        NEW_MESSAGE = 4, // Новое сообщение
+        INPUT_MESSAGES_READ = 6, // Входящие сообщения прочитаны
+        OUTPUT_MESSAGES_READ = 7, // Исходящие сообщения прочитаны
+        USER_TYPES_IN_DIALOG = 61, // Пользователь набирает текст в диалоге
+        USER_TYPES_IN_CHAT = 62, // Пользователь набирает текст в чате
+        UNREAD_DIALOGS_CHANGED = 80, // Изменение количества непрочитанных диалогов
+    };
 public:
     LongPoll();
     void getLongPollServer();
     void consPrint(QString text);
+    void finished(QNetworkReply* reply);
+    void doLongPollRequest();
+    void parseLongPollUpdates(const QJsonArray& updates);
     ~LongPoll(){
         delete _manager;
     }
