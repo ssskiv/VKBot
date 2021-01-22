@@ -20,12 +20,12 @@ Window {
             {
                 TextField
                 {
-                    id:validstring
+                    id:_accessToken
                     maximumLength: 20
-                    onEditingFinished://Когда нажат Enter:
+                    onEditingFinished://Когда нажат Enter/Return:
                     {
-                        validstring.readOnly=true // Поле перестает редактироваться.
-                        consout+="Validation String:"+validstring.text+'/n'//Строка добавляется в консоль.
+                        _accessToken.readOnly=true // Поле перестает редактироваться
+                        consout+="Access roken:"+_accessToken.text+'/n'//Строка добавляется в консоль
                     }
                 }
             }
