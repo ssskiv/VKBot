@@ -13,14 +13,15 @@
 #include <QNetworkReply>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <fstream>
 
 class LongPoll: public QObject
 {
 
     Q_OBJECT
-
+    QString access_token;
     QQmlEngine _engine;
-    QQmlComponent _component;
+    QQmlComponent *_component;
     QObject *_gui;
     QNetworkAccessManager*_manager;
     QString _server,_key,_ts;
@@ -35,7 +36,7 @@ class LongPoll: public QObject
 public:
     LongPoll();
     void getLongPollServer();
-    void consPrint(QString text);
+   // void consPrint(QString text);
     void finished(QNetworkReply* reply);
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);

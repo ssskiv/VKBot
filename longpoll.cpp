@@ -3,9 +3,10 @@
 LongPoll::LongPoll()
 {
     _manager=new QNetworkAccessManager();
-    QQmlComponent _component(&_engine,QUrl::fromLocalFile("main.qml"));
+    _component= new QQmlComponent(&_engine,"main.qml");
 consPrint("It almost works!");
- _gui = _component.create();
+
+ _gui = _component->create();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -24,10 +25,14 @@ void LongPoll::getLongPollServer()
     _manager->get(QNetworkRequest(url)); // Выполняется GET-запрос к серверу ВКонтакте
     consPrint("It works!");
 }
-void LongPoll::consPrint(QString text)
+/*void LongPoll::consPrint(QString text)
 {
-    _gui->findChild<QObject*>("main")->setProperty("cppcin",text);
-}
+    QObject* gui= _gui;
+   QObject* tf= gui->findChild<QObject*>("TOKEN");
+  if(tf)
+   tf->setProperty("cppcin",text);
+   // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
+}*/
 /*
  * Метод создаёт соединение с Long Poll сервером.
  */

@@ -4,17 +4,15 @@ import QtQuick.Controls 1.4
 
 Window {
     id: mainw
-    objectName: "main"
+    objectName: "Main"
     width: 640
     height: 480
     visible: true
     title: qsTr("VKBotServer")
     color:"grey"
-    property string cppcin
     property string consout
-    onCppcinChanged: {
-    consout+=cppcin
-    }
+
+
     TabView {
         objectName: "TabView"
         width:parent.width
@@ -28,13 +26,20 @@ Window {
                 objectName: "rect"
                 TextField
                 {
+                    property string cppcin
+                   /* function consOut(msg: string) : string {
+                            consout+=msg+'\n'
+                        }*/
+                    onCppcinChanged: {
+                    consout+=cppcin
+                    }
                     objectName: "TOKEN"
                     id:_accessToken
                     maximumLength: 20
                     onEditingFinished://Когда нажат Enter/Return:
                     {
                         _accessToken.readOnly=true // Поле перестает редактироваться
-                        consout+="Access roken:"+_accessToken.text+'\n'//Строка добавляется в консоль
+                        consout+="Access token:"+_accessToken.text+'\n'//Строка добавляется в консоль
 
                     }
                 }
