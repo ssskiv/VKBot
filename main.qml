@@ -35,6 +35,7 @@ Window {
                     {
                         _accessToken.readOnly=true // Поле перестает редактироваться
                         consout+="Access roken:"+_accessToken.text+'\n'//Строка добавляется в консоль
+
                     }
                 }
             }

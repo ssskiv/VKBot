@@ -21,7 +21,7 @@ class LongPoll: public QObject
 
     QQmlEngine _engine;
     QQmlComponent _component;
-    QObject *_gui = _component.create();
+    QObject *_gui;
     QNetworkAccessManager*_manager;
     QString _server,_key,_ts;
     enum LONGPOLL_EVENTS {

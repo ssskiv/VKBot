@@ -3,8 +3,9 @@
 LongPoll::LongPoll()
 {
     _manager=new QNetworkAccessManager();
-    QQmlComponent _component(QQmlEngine &engine,QUrl = QUrl::fromLocalFile("main.qml"));
+    QQmlComponent _component(&_engine,QUrl::fromLocalFile("main.qml"));
 consPrint("It almost works!");
+ _gui = _component.create();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -82,7 +83,7 @@ void LongPoll::finished(QNetworkReply* reply) {
 void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
     for (auto value : updates) { // Цикл по всем событиям
         QJsonArray update = value.toArray(); // Получение объекта события
-        switch (update.at(0).toInt()) { // Проверка типа события
+        /*switch (update.at(0).toInt()) { // Проверка типа события
         case NEW_MESSAGE:
             emit gotNewMessage(update.at(1).toInt());
             break;
@@ -103,6 +104,6 @@ void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
             break;
         default:
             break;
-        }
+        }*/
     }
 }
