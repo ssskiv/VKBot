@@ -3,10 +3,10 @@
 LongPoll::LongPoll()
 {
     _manager=new QNetworkAccessManager();
-  //  _component= new QQmlComponent(&_engine,"main.qml");
+    //  _component= new QQmlComponent(&_engine,"main.qml");
 
 
- //_gui = _component->create();
+    //_gui = _component->create();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -28,10 +28,12 @@ void LongPoll::getLongPollServer()
 void LongPoll::consPrint(QString text, QObject* gui)
 {
 
-//   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
-  if(gui)
-   gui->setProperty("cppcin",text);
-   // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
+    //   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
+    if(gui){
+
+        gui->setProperty("cppcin",text);
+    }
+    // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
 }
 /*
  * Метод создаёт соединение с Long Poll сервером.

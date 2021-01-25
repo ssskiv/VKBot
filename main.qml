@@ -11,7 +11,7 @@ Window {
     title: qsTr("VKBotServer")
     color:"grey"
     property string consout
-
+    property string cppcin
 
     TabView {
         objectName: "TabView"
@@ -26,13 +26,11 @@ Window {
                 objectName: "rect"
                 TextField
                 {
-                    property string cppcin
-                   /* function consOut(msg: string) : string {
+
+                    /* function consOut(msg: string) : string {
                             consout+=msg+'\n'
                         }*/
-                    onCppcinChanged: {
-                    consout+=cppcin
-                    }
+
                     objectName: "TOKEN"
                     id:_accessToken
                     maximumLength: 20
@@ -52,20 +50,28 @@ Window {
             objectName: "Console"
             title:"Console"
             Rectangle{
+                id:rect
                 objectName: "rect"
                 color:"black"
                 Label
                 {
-                    id:consolelab
+                    id:conslab
                     color:"green"
+
                     Text{
+                        id:constext
                         text:consout
                         color:"green"
+
                     }
                 }
             }
         }
     }
+    onCppcinChanged: {
+        consout+=cppcin
+    }
+
 }
 
 
