@@ -3,10 +3,10 @@
 LongPoll::LongPoll()
 {
     _manager=new QNetworkAccessManager();
-    _component= new QQmlComponent(&_engine,"main.qml");
-consPrint("It almost works!");
+  //  _component= new QQmlComponent(&_engine,"main.qml");
 
- _gui = _component->create();
+
+ //_gui = _component->create();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -23,16 +23,16 @@ void LongPoll::getLongPollServer()
     query.addQueryItem("v", "5.53"); // Указывается версия используемого API
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     _manager->get(QNetworkRequest(url)); // Выполняется GET-запрос к серверу ВКонтакте
-    consPrint("It works!");
+
 }
-/*void LongPoll::consPrint(QString text)
+void LongPoll::consPrint(QString text, QObject* gui)
 {
-    QObject* gui= _gui;
-   QObject* tf= gui->findChild<QObject*>("TOKEN");
-  if(tf)
-   tf->setProperty("cppcin",text);
+
+//   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
+  if(gui)
+   gui->setProperty("cppcin",text);
    // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
-}*/
+}
 /*
  * Метод создаёт соединение с Long Poll сервером.
  */

@@ -14,7 +14,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <fstream>
-
+#include <QtQuick>
 class LongPoll: public QObject
 {
 
@@ -36,7 +36,7 @@ class LongPoll: public QObject
 public:
     LongPoll();
     void getLongPollServer();
-   // void consPrint(QString text);
+    void consPrint(QString text, QObject* gui);
     void finished(QNetworkReply* reply);
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
