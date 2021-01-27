@@ -1,50 +1,41 @@
-#include <QApplication>
-#include <QtWidgets>
-#include <QPalette>
-void cprint(QString text);
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include "longpoll.h"
 
+void consPrint(QString text, QObject* gui);
 
-QTabWidget tabs;
-QWidget vktab;
-QWidget contab;
-QPalette vk;
-QPalette console;
-QPushButton tfrstrtbt(&vktab);
-QLabel cont(&contab);
-QString ct;
 int main(int argc, char *argv[])
 {
-QApplication a(argc, argv);
-QWidget w;
-QHBoxLayout layout(&w);
-    ct="dfsjlkfbsdksdjfgbslkjdfhbskljfhbskldjfbskjfsbdkljfbskjdf\n";
-    cont.setText(ct);
-    ct+="dfsjlkfbsdksdjfgbslkjdfhbskljfhbskldjfbskjfsbdkljfbskjdf\n";
-    cont.setText(ct);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    w.resize(640,480);
-    w.setWindowTitle("bot");
-    w.setWindowIcon(QIcon(":/icons/icon.jpg"));
-    layout.addWidget(&tabs);
-    console.setColor(QPalette::Window, Qt::black);
-    console.setColor(QPalette::WindowText, Qt::green);
-    vk.setColor(QPalette::Button, Qt::darkCyan);
-    vk.setColor(QPalette::Window, Qt::blue);
-    vktab.setPalette(vk);
-    vktab.setAutoFillBackground(true);
-    contab.setPalette(console);
-    contab.setAutoFillBackground(true);
-    //tfrstrtbt.setFlat(true);
-    tfrstrtbt.setAutoFillBackground(true);
-    tabs.addTab(&vktab,"VK");
-    tabs.addTab(&contab,"Console");
-cprint("shalabola");
-    w.show();
-    return a.exec();
+    QGuiApplication app(argc, argv);
 
+    QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,&app, [url](QObject *obj, const QUrl &objUrl) {
+        if (!obj && url == objUrl)
+            QCoreApplication::exit(-1);}, Qt::QueuedConnection);
+    QQmlComponent component(&engine,QUrl(QStringLiteral("qrc:/main.qml")));
+    engine.load(url);
+    QObject* obj=component.create();
+    LongPoll lp;
+    /*lp.getLongPollServer();
+    lp.doLongPollRequest();*/
+    consPrint("IT WOOOOOORK", obj);
+    qDebug("it work");
+    delete obj;
+    return app.exec();
 }
-void cprint(QString text)
+void consPrint(QString text, QObject* gui)
 {
-    ct+=text+'\n';
-    cont.setText(ct);
+
+    //   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
+    if(gui){
+
+       QObject*cptext= gui->findChild<QObject*>("cptext");
+cptext->setProperty("text",text);
+                //setProperty("text",text);
+        qDebug("yea");
+    }
+    // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
 }

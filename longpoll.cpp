@@ -2,7 +2,11 @@
 
 LongPoll::LongPoll()
 {
-_manager=new QNetworkAccessManager();
+    _manager=new QNetworkAccessManager();
+    //  _component= new QQmlComponent(&_engine,"main.qml");
+
+
+    //_gui = _component->create();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -10,8 +14,9 @@ _manager=new QNetworkAccessManager();
 void LongPoll::getLongPollServer(QObject*_gui)
 {
 
-
-    QString _acstoken;
+    QObject*tfield=_gui->findChild<QQuickItem*>("TOKEN");
+    QVariant _acsvtoken=tfield->property("text");
+    QString _acstoken =_acsvtoken.toString();
     QUrl url("https://api.vk.com/method/messages.getLongPollServer"); // Адрес запроса к API
     QUrlQuery query;
     query.addQueryItem("access_token", _acstoken); // Указывается Access Token
