@@ -1,19 +1,15 @@
 #ifndef LONGPOLL_H
 #define LONGPOLL_H
+
 #include <QObject>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QNetworkAccessManager>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QLocale>
-#include <QVariant>
-#include <QJsonDocument>
 #include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <fstream>
-#include <QtQuick>
+
 class LongPoll: public QObject
 {
 
