@@ -1,6 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "longpoll.h"
+
+void consPrint(QString text, QObject* gui);
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -18,7 +21,21 @@ int main(int argc, char *argv[])
     LongPoll lp;
     /*lp.getLongPollServer();
     lp.doLongPollRequest();*/
-    lp.consPrint("IT WOOOOOORK", obj);
+    consPrint("IT WOOOOOORK", obj);
+    qDebug("it work");
     delete obj;
     return app.exec();
+}
+void consPrint(QString text, QObject* gui)
+{
+
+    //   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
+    if(gui){
+
+       QObject*cptext= gui->findChild<QObject*>("cptext");
+cptext->setProperty("text",text);
+                //setProperty("text",text);
+        qDebug("yea");
+    }
+    // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
 }
