@@ -1,24 +1,50 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include "longpoll.h"
+#include <QApplication>
+#include <QtWidgets>
+#include <QPalette>
+void cprint(QString text);
+
+
+QTabWidget tabs;
+QWidget vktab;
+QWidget contab;
+QPalette vk;
+QPalette console;
+QPushButton tfrstrtbt(&vktab);
+QLabel cont(&contab);
+QString ct;
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+QApplication a(argc, argv);
+QWidget w;
+QHBoxLayout layout(&w);
+    ct="dfsjlkfbsdksdjfgbslkjdfhbskljfhbskldjfbskjfsbdkljfbskjdf\n";
+    cont.setText(ct);
+    ct+="dfsjlkfbsdksdjfgbslkjdfhbskljfhbskldjfbskjfsbdkljfbskjdf\n";
+    cont.setText(ct);
 
-    QGuiApplication app(argc, argv);
+    w.resize(640,480);
+    w.setWindowTitle("bot");
+    w.setWindowIcon(QIcon(":/icons/icon.jpg"));
+    layout.addWidget(&tabs);
+    console.setColor(QPalette::Window, Qt::black);
+    console.setColor(QPalette::WindowText, Qt::green);
+    vk.setColor(QPalette::Button, Qt::darkCyan);
+    vk.setColor(QPalette::Window, Qt::blue);
+    vktab.setPalette(vk);
+    vktab.setAutoFillBackground(true);
+    contab.setPalette(console);
+    contab.setAutoFillBackground(true);
+    //tfrstrtbt.setFlat(true);
+    tfrstrtbt.setAutoFillBackground(true);
+    tabs.addTab(&vktab,"VK");
+    tabs.addTab(&contab,"Console");
+cprint("shalabola");
+    w.show();
+    return a.exec();
 
-    QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,&app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);}, Qt::QueuedConnection);
-    QQmlComponent component(&engine,QUrl(QStringLiteral("qrc:/main.qml")));
-    engine.load(url);
-    QObject* obj=component.create();
-    LongPoll lp;
-    /*lp.getLongPollServer();
-    lp.doLongPollRequest();*/
-    lp.consPrint("IT WOOOOOORK", obj);
-    delete obj;
-    return app.exec();
+}
+void cprint(QString text)
+{
+    ct+=text+'\n';
+    cont.setText(ct);
 }

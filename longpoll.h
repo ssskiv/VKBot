@@ -1,28 +1,20 @@
 #ifndef LONGPOLL_H
 #define LONGPOLL_H
+
 #include <QObject>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QNetworkAccessManager>
-#include <QQmlEngine>
-#include <QUrl>
-#include <QQmlComponent>
-#include <QLocale>
-#include <QVariant>
-#include <QJsonDocument>
 #include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <fstream>
-#include <QtQuick>
+
 class LongPoll: public QObject
 {
 
     Q_OBJECT
     QString access_token;
-    QQmlEngine _engine;
-    QQmlComponent *_component;
-    QObject *_gui;
     QNetworkAccessManager*_manager;
     QString _server,_key,_ts;
     enum LONGPOLL_EVENTS {
@@ -35,9 +27,9 @@ class LongPoll: public QObject
     };
 public:
     LongPoll();
-    void getLongPollServer();
-    void consPrint(QString text, QObject* gui);
-    void finished(QNetworkReply* reply);
+    void getLongPollServer(QObject*_gui);
+
+    void finished(QNetworkReply* reply, QObject* _gui);
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
     ~LongPoll(){

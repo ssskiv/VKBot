@@ -2,21 +2,16 @@
 
 LongPoll::LongPoll()
 {
-    _manager=new QNetworkAccessManager();
-    //  _component= new QQmlComponent(&_engine,"main.qml");
-
-
-    //_gui = _component->create();
+_manager=new QNetworkAccessManager();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
  */
-void LongPoll::getLongPollServer()
+void LongPoll::getLongPollServer(QObject*_gui)
 {
 
-    QObject*tfield=_gui->findChild<QObject*>("TabView")->findChild<QObject*>("VKTab")->findChild<QObject*>("rect")->findChild<QObject*>("TOKEN");
-    QVariant _acsvtoken=tfield->property("text");
-    QString _acstoken =_acsvtoken.toString();
+
+    QString _acstoken;
     QUrl url("https://api.vk.com/method/messages.getLongPollServer"); // Адрес запроса к API
     QUrlQuery query;
     query.addQueryItem("access_token", _acstoken); // Указывается Access Token
@@ -25,16 +20,7 @@ void LongPoll::getLongPollServer()
     _manager->get(QNetworkRequest(url)); // Выполняется GET-запрос к серверу ВКонтакте
 
 }
-void LongPoll::consPrint(QString text, QObject* gui)
-{
 
-    //   QObject* tf= gui->findChild<QQuickItem*>("TOKEN");
-    if(gui){
-
-        gui->setProperty("cppcin",text);
-    }
-    // QMetaObject::invokeMethod(main, "consOut",Q_ARG(QString, text));
-}
 /*
  * Метод создаёт соединение с Long Poll сервером.
  */
@@ -57,7 +43,7 @@ void LongPoll::doLongPollRequest() {
  * Метод обрабатывает результаты запроса к серверу.
  * @:param: reply -- указатель на ответ сервера.
  */
-void LongPoll::finished(QNetworkReply* reply) {
+void LongPoll::finished(QNetworkReply* reply, QObject* _gui) {
     QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
     if (_server.isNull() || _server.isEmpty()) {
         // ...
@@ -73,7 +59,7 @@ void LongPoll::finished(QNetworkReply* reply) {
                 _server.clear(); // Удаление адреса сервера
                 _key.clear(); // Удаление ключа доступа
                 _ts = ""; // Удаление номера последнего события
-                getLongPollServer(); // Запрос новой информации для соединения
+                getLongPollServer(_gui); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
             _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
