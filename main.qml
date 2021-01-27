@@ -65,6 +65,16 @@ Window {
 
                     }
                 }
+                Label
+                {
+objectName: "cpc"
+Text{
+    id:cpctext
+objectName: "cptext"
+    color:"green"
+
+}
+                }
             }
         }
     }
