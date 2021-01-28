@@ -11,10 +11,10 @@ void LongPoll::getLongPollServer()
 {
 
 
-    QString _acstoken;
+
     QUrl url("https://api.vk.com/method/messages.getLongPollServer"); // Адрес запроса к API
     QUrlQuery query;
-    query.addQueryItem("access_token", _acstoken); // Указывается Access Token
+    query.addQueryItem("access_token", token); // Указывается Access Token
     query.addQueryItem("v", "5.53"); // Указывается версия используемого API
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     _manager->get(QNetworkRequest(url)); // Выполняется GET-запрос к серверу ВКонтакте
@@ -45,10 +45,12 @@ void LongPoll::doLongPollRequest() {
  */
 void LongPoll::finished(QNetworkReply* reply) {
     QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
-    if (_server.isNull() || _server.isEmpty()) {
-        // ...
-        // Сохранение параметров соединения
-        // ...
+    if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
+        QJsonObject jObj = jDoc.object().value("response").toObject();
+        _server = jObj.value("server").toString(); // Сохранение адреса сервера
+        _key = jObj.value("key").toString(); // Сохранение ключа доступа
+        _ts = jObj.value("ts").toInt(); // Сохранение номера последнего события
+        doLongPollRequest(); // Открытие соединения с Long Poll сервером
     } else {
         QJsonObject jObj = jDoc.object();
         if (jObj.contains("failed")) { // Проверка на успешность запроса к серверу
@@ -100,9 +102,7 @@ void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
         }*/
     }
 }
-Button *LongPoll::createButton(const QString &text, const char *member)
+void LongPoll::settoken(QString toke)
 {
-    Button *button = new Button(text);
-    connect(button, SIGNAL(clicked()), this, member);
-    return button;
+token=toke;
 }
