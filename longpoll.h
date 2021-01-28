@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include "button.h"
 
 class LongPoll: public QObject
 {
@@ -17,6 +18,7 @@ class LongPoll: public QObject
     QString access_token;
     QNetworkAccessManager*_manager;
     QString _server,_key,_ts;
+    Button *createButton(const QString &text, const char *member);
     enum LONGPOLL_EVENTS {
         NEW_MESSAGE = 4, // Новое сообщение
         INPUT_MESSAGES_READ = 6, // Входящие сообщения прочитаны
@@ -27,14 +29,15 @@ class LongPoll: public QObject
     };
 public:
     LongPoll();
-    void getLongPollServer(QObject*_gui);
-
-    void finished(QNetworkReply* reply, QObject* _gui);
+    void getLongPollServer();
+    void finished(QNetworkReply* reply);
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
     ~LongPoll(){
         delete _manager;
     }
+
+
 };
 
 #endif // LONGPOLL_H

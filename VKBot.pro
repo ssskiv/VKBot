@@ -10,11 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     longpoll.cpp \
-    main.cpp
+    main.cpp\
+    button.cpp \
+    vkbot.cpp
 
 HEADERS += \
-    longpoll.h
-
+    longpoll.h\
+    button.h \
+    vkbot.h
 #  FORMS +=
 RESOURCES+= src.qrc
 

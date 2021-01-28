@@ -7,7 +7,7 @@ _manager=new QNetworkAccessManager();
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
  */
-void LongPoll::getLongPollServer(QObject*_gui)
+void LongPoll::getLongPollServer()
 {
 
 
@@ -43,7 +43,7 @@ void LongPoll::doLongPollRequest() {
  * Метод обрабатывает результаты запроса к серверу.
  * @:param: reply -- указатель на ответ сервера.
  */
-void LongPoll::finished(QNetworkReply* reply, QObject* _gui) {
+void LongPoll::finished(QNetworkReply* reply) {
     QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
     if (_server.isNull() || _server.isEmpty()) {
         // ...
@@ -59,7 +59,7 @@ void LongPoll::finished(QNetworkReply* reply, QObject* _gui) {
                 _server.clear(); // Удаление адреса сервера
                 _key.clear(); // Удаление ключа доступа
                 _ts = ""; // Удаление номера последнего события
-                getLongPollServer(_gui); // Запрос новой информации для соединения
+                getLongPollServer(); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
             _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
@@ -99,4 +99,10 @@ void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
             break;
         }*/
     }
+}
+Button *LongPoll::createButton(const QString &text, const char *member)
+{
+    Button *button = new Button(text);
+    connect(button, SIGNAL(clicked()), this, member);
+    return button;
 }
