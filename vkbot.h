@@ -17,6 +17,7 @@ class vkbot: public QWidget
     LongPoll* lp=new LongPoll;
     QString token=nullptr;
     QString log;
+    QNetworkAccessManager* manager=new QNetworkAccessManager();
 bool vkclicked=false;
 public:
     vkbot(/*QWidget *parent = nullptr*/);
