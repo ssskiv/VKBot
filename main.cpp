@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
     cprint("App started",&cont);
 
     w.show();*/
+    qApp->setStyle(QStyleFactory::create("Fusion"));
     return a.exec();
 
 }
