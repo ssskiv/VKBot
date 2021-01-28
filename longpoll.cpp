@@ -2,7 +2,7 @@
 
 LongPoll::LongPoll()
 {
-_manager=new QNetworkAccessManager();
+    _manager=new QNetworkAccessManager();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -34,6 +34,7 @@ void LongPoll::doLongPollRequest() {
     query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     _manager->get(QNetworkRequest(url)); // Выполнение GET-запроса к Long Poll серверу
+    reply=_manager->get(QNetworkRequest(url));
 }
 /*
  * Метод обрабатывает результаты запроса к серверу.
@@ -104,5 +105,9 @@ void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
 }
 void LongPoll::settoken(QString toke)
 {
-token=toke;
+    token=toke;
+}
+QNetworkReply* LongPoll:: getrep()
+{
+    return reply;
 }

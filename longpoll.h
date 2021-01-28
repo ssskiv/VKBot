@@ -16,6 +16,7 @@ class LongPoll: public QObject
     Q_OBJECT
     QNetworkAccessManager*_manager;
     QString _server,_key,_ts,token;
+    QNetworkReply*reply;
     enum LONGPOLL_EVENTS {
         NEW_MESSAGE = 4, // Новое сообщение
         INPUT_MESSAGES_READ = 6, // Входящие сообщения прочитаны
@@ -31,6 +32,7 @@ public:
     void finished(QNetworkReply* reply);
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
+    QNetworkReply *getrep();
     ~LongPoll(){
         delete _manager;
 

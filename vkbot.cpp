@@ -29,7 +29,7 @@ vkbot::vkbot(/*QWidget *parent*/)
     {
         lp->settoken(token);
         lp->getLongPollServer();
-        lp->finished()
+        lp->finished(lp->getrep());
     }
 }
 void vkbot::vkClicked()
@@ -54,4 +54,8 @@ void vkbot::print(QString text)
 {
     log+=text+'\n';
     notl->setText(log);
+}
+void vkbot::send(QString mesg, QString user_id)
+{
+
 }
