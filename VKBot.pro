@@ -25,3 +25,5 @@ RESOURCES+= src.qrc
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+INCLUDEPATH+= "C:\Qt\Tools\OpenSSL\Win_x64\bin"

@@ -1,5 +1,8 @@
 #include "vkbot.h"
-
+vkbot::~vkbot()
+{
+//delete
+}
 vkbot::vkbot(/*QWidget *parent*/)
 {
     QWidget w;
@@ -53,7 +56,8 @@ void vkbot::feditingFinished()
     print("Ключ доступа:"+token);
     lp->settoken(token);
     lp->getLongPollServer();
-    lp->finished(lp->getrep());
+   // QNetworkReply* rep= lp->getrep();
+    //lp->finished(rep);
     print("started");
     send("Bot started","356213674");
 }

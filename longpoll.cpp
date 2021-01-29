@@ -2,22 +2,26 @@
 
 LongPoll::LongPoll()
 {
-    _manager=new QNetworkAccessManager();
+_manager=new QNetworkAccessManager();
+connect(_manager,&QNetworkAccessManager::finished,this,&LongPoll::finished);
+
+
+
+qDebug() << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
  */
 void LongPoll::getLongPollServer()
 {
-
-
-
     QUrl url("https://api.vk.com/method/messages.getLongPollServer"); // Адрес запроса к API
     QUrlQuery query;
     query.addQueryItem("access_token", token); // Указывается Access Token
     query.addQueryItem("v", "5.53"); // Указывается версия используемого API
+    QNetworkRequest request;
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
-    _manager->get(QNetworkRequest(url)); // Выполняется GET-запрос к серверу ВКонтакте
+    request.setUrl(url);
+    _manager->get(request); // Выполняется GET-запрос к серверу ВКонтакте
 
 }
 
@@ -27,14 +31,21 @@ void LongPoll::getLongPollServer()
 void LongPoll::doLongPollRequest() {
     QUrl url("https://" + _server); // Формирование адреса запроса
     QUrlQuery query;
+    req.setUrl(url);
     query.addQueryItem("act", "a_check"); // Параметр действия по умолчанию
     query.addQueryItem("key", _key); // Ключ доступа
     query.addQueryItem("ts", QString("%1").arg(_ts)); // Номер последнего события
     query.addQueryItem("wait", "25"); // Максимум 25 секунд ожидания
     query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
-    _manager->get(QNetworkRequest(url)); // Выполнение GET-запроса к Long Poll серверу
-    reply=_manager->get(QNetworkRequest(url));
+   // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
+    req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    QByteArray par="";
+    _manager->post(req,par);
+    rep=_manager->get(req);
+
+    //reply=_manager->get(QNetworkRequest(url));
+   // qDebug(reply);
 }
 /*
  * Метод обрабатывает результаты запроса к серверу.
@@ -109,5 +120,5 @@ void LongPoll::settoken(QString toke)
 }
 QNetworkReply* LongPoll:: getrep()
 {
-    return reply;
+    //return reply;
 }

@@ -21,6 +21,7 @@ class vkbot: public QWidget
 bool vkclicked=false;
 public:
     vkbot(/*QWidget *parent = nullptr*/);
+    ~vkbot();
     void print(QString text);
     void send(QString mesg, QString user_id);
 private slots:
