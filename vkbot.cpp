@@ -32,13 +32,15 @@ vkbot::vkbot(/*QWidget *parent*/)
     {
         lp->settoken(token);
         lp->getLongPollServer();
+        lp->doLongPollRequest();
+    lp->parseLongPollUpdates()
         print("started");
     }
 
 }
 void vkbot::vkClicked()
 {
-    tokenf->setReadOnly(false);
+    tokenf->setEnabled(true);
 }
 Button *vkbot::createButton(const QString &text, const char *member)
 {
@@ -48,7 +50,7 @@ Button *vkbot::createButton(const QString &text, const char *member)
 }
 void vkbot::feditingFinished()
 {
-    tokenf->setReadOnly(true);
+    tokenf->setEnabled(false);
     token=tokenf->text();
     lb->setText(token);
 

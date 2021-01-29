@@ -2,9 +2,9 @@
 
 LongPoll::LongPoll()
 {
-_manager=new QNetworkAccessManager();
-connect(_manager,&QNetworkAccessManager::finished,this,&LongPoll::finished);
-qDebug() << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
+    _manager=new QNetworkAccessManager();
+    connect(_manager,&QNetworkAccessManager::finished,this,&LongPoll::finished);
+    qDebug() << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 /**
  * Метод получает данные для соединения с Long Poll сервером ВКонтакте.
@@ -35,14 +35,14 @@ void LongPoll::doLongPollRequest() {
     query.addQueryItem("wait", "25"); // Максимум 25 секунд ожидания
     query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
-   // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
+    // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
     req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     QByteArray par="";
     _manager->post(req,par);
     rep=_manager->get(req);
 
     //reply=_manager->get(QNetworkRequest(url));
-   // qDebug(reply);
+    // qDebug(reply);
 }
 /*
  * Метод обрабатывает результаты запроса к серверу.
@@ -87,28 +87,11 @@ void LongPoll::finished(QNetworkReply* reply) {
 void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
     for (auto value : updates) { // Цикл по всем событиям
         QJsonArray update = value.toArray(); // Получение объекта события
-        /*switch (update.at(0).toInt()) { // Проверка типа события
+        switch (update.at(0).toInt()) { // Проверка типа события
         case NEW_MESSAGE:
             emit gotNewMessage(update.at(1).toInt());
             break;
-        case INPUT_MESSAGES_READ:
-            emit readMessages(update.at(1).toInt(), update.at(2).toInt(), false);
-            break;
-        case OUTPUT_MESSAGES_READ:
-            emit readMessages(update.at(1).toInt(), update.at(2).toInt(), true);
-            break;
-        case USER_TYPES_IN_DIALOG:
-            emit userTyping(update.at(1).toInt(), 0);
-            break;
-        case USER_TYPES_IN_CHAT:
-            emit userTyping(update.at(1).toInt(), update.at(2).toInt());
-            break;
-        case UNREAD_DIALOGS_CHANGED:
-            emit unreadDialogsCounterUpdated(update.at(1).toInt());
-            break;
-        default:
-            break;
-        }*/
+        }
     }
 }
 void LongPoll::settoken(QString toke)

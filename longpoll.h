@@ -30,7 +30,6 @@ public:
     LongPoll();
     void settoken(QString toke);
     void getLongPollServer();
-
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
     ~LongPoll(){
@@ -40,6 +39,9 @@ public:
 
 public slots:
     void finished(QNetworkReply* reply);
+signals:
+    void gotNewMessage(int id);
+
 };
 
 #endif // LONGPOLL_H
