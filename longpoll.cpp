@@ -4,9 +4,6 @@ LongPoll::LongPoll()
 {
 _manager=new QNetworkAccessManager();
 connect(_manager,&QNetworkAccessManager::finished,this,&LongPoll::finished);
-
-
-
 qDebug() << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 /**
@@ -17,7 +14,7 @@ void LongPoll::getLongPollServer()
     QUrl url("https://api.vk.com/method/messages.getLongPollServer"); // Адрес запроса к API
     QUrlQuery query;
     query.addQueryItem("access_token", token); // Указывается Access Token
-    query.addQueryItem("v", "5.53"); // Указывается версия используемого API
+    query.addQueryItem("v", "5.90"); // Указывается версия используемого API
     QNetworkRequest request;
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     request.setUrl(url);
@@ -118,7 +115,4 @@ void LongPoll::settoken(QString toke)
 {
     token=toke;
 }
-QNetworkReply* LongPoll:: getrep()
-{
-    //return reply;
-}
+

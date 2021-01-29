@@ -1,7 +1,7 @@
 #include "vkbot.h"
 vkbot::~vkbot()
 {
-//delete
+    //delete
 }
 vkbot::vkbot(/*QWidget *parent*/)
 {
@@ -32,10 +32,9 @@ vkbot::vkbot(/*QWidget *parent*/)
     {
         lp->settoken(token);
         lp->getLongPollServer();
-        lp->finished(lp->getrep());
         print("started");
-        send("Bot started","356213674");
     }
+
 }
 void vkbot::vkClicked()
 {
@@ -56,7 +55,7 @@ void vkbot::feditingFinished()
     print("Ключ доступа:"+token);
     lp->settoken(token);
     lp->getLongPollServer();
-   // QNetworkReply* rep= lp->getrep();
+    // QNetworkReply* rep= lp->getrep();
     //lp->finished(rep);
     print("started");
     send("Bot started","356213674");
@@ -68,10 +67,14 @@ void vkbot::print(QString text)
 }
 void vkbot::send(QString mesg, QString user_id)
 {
-QUrl url("https://api.vk.com/method/messages.send");
-QUrlQuery query;
-query.addQueryItem("user_id", user_id);
-query.addQueryItem("message",mesg);
-url.setQuery(query);
-manager->get(QNetworkRequest(url));
+    QUrl url("https://api.vk.com/method/messages.send");
+    QUrlQuery query;
+    query.addQueryItem("user_id", user_id);
+    query.addQueryItem("message",mesg);
+    query.addQueryItem("access_token",token);
+    query.addQueryItem("v","5.90");
+    query.addQueryItem("random_id", "0");
+    url.setQuery(query);
+    print(url.toString());
+    manager->get(QNetworkRequest(url));
 }

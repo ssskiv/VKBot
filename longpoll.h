@@ -33,7 +33,6 @@ public:
 
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
-    QNetworkReply *getrep();
     ~LongPoll(){
         delete _manager;
 
