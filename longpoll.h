@@ -32,6 +32,8 @@ public:
     void getLongPollServer();
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
+    void connectLongPoll();
+    QString stat;
     ~LongPoll(){
         delete _manager;
 
@@ -40,7 +42,7 @@ public:
 public slots:
     void finished(QNetworkReply* reply);
 signals:
-    void gotNewMessage(int id);
+    void gotNewMessage(int id,QString msg);
 
 };
 

@@ -14,12 +14,13 @@ vkbot::vkbot(/*QWidget *parent*/)
     //pal.setColor(QPalette::, Qt::darkCyan);
     qApp->setPalette(pal);
     Button *vk=createButton("Изменить ключ доступа",SLOT(vkClicked()));
-    Button *vsk=createButton("вторая кнопка",SLOT(vkClicked()));
-    connect(tokenf,SIGNAL(editingFinished()),this,SLOT(feditingFinished()));
+    Button *vsk=createButton("Запустить бота",SLOT(feditingFinished()));
+   // connect(tokenf,SIGNAL(editingFinished()),this,SLOT(feditingFinished()));
     hlay->addWidget(vk);
     hlay->addWidget(vsk);
     layout->addLayout(hlay);
     hlay->addWidget(lb);
+    layout->addWidget(status);
     layout->addWidget(tokenf);
     layout->addWidget(notl);
     lb->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -28,15 +29,15 @@ vkbot::vkbot(/*QWidget *parent*/)
     setWindowIcon(QIcon(":/icons/icon.jpg"));
     setMaximumSize(1920,1080);
     setMinimumSize(640, 480);
-    if(token!=nullptr)
-    {
-        lp->settoken(token);
-        lp->getLongPollServer();
-        lp->doLongPollRequest();
-    lp->parseLongPollUpdates()
-        print("started");
-    }
-
+   // if(token!=nullptr)
+   // {
+       // lp->settoken(token);
+       // lp->getLongPollServer();
+       // lp->doLongPollRequest();
+    //lp->parseLongPollUpdates();
+        print("Started");
+        connect(lp,SIGNAL(&LongPoll::gotNewMessage),this,SLOT(vkbot::newMes));
+   // }
 }
 void vkbot::vkClicked()
 {
@@ -57,10 +58,13 @@ void vkbot::feditingFinished()
     print("Ключ доступа:"+token);
     lp->settoken(token);
     lp->getLongPollServer();
+   // lp->connectLongPoll();
+    qDebug("Connected");
     // QNetworkReply* rep= lp->getrep();
     //lp->finished(rep);
-    print("started");
-    send("Bot started","356213674");
+    lp->doLongPollRequest();
+    print("Bot started");
+
 }
 void vkbot::print(QString text)
 {
@@ -80,3 +84,8 @@ void vkbot::send(QString mesg, QString user_id)
     print(url.toString());
     manager->get(QNetworkRequest(url));
 }
+void vkbot::newMes(int id,QString msg)
+{
+print(QString(id)+": "+msg);
+}
+

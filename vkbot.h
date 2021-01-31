@@ -12,6 +12,7 @@ class vkbot: public QWidget
     QPalette pal;
     Button *createButton(const QString &text, const char *member);
     QLabel *lb=new QLabel;
+    QLabel * status= new QLabel;
     QLabel *notl=new QLabel;
     QLineEdit *tokenf=new QLineEdit;
     LongPoll* lp=new LongPoll;
@@ -27,6 +28,7 @@ public:
 private slots:
     void vkClicked();
     void feditingFinished();
+    void newMes(int id,QString msg);
 };
 
 #endif // VKBOT_H

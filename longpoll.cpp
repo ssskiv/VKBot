@@ -20,6 +20,7 @@ void LongPoll::getLongPollServer()
     request.setUrl(url);
     _manager->get(request); // Выполняется GET-запрос к серверу ВКонтакте
 
+
 }
 
 /*
@@ -28,17 +29,18 @@ void LongPoll::getLongPollServer()
 void LongPoll::doLongPollRequest() {
     QUrl url("https://" + _server); // Формирование адреса запроса
     QUrlQuery query;
+   // qDebug("Connecting....");
     req.setUrl(url);
     query.addQueryItem("act", "a_check"); // Параметр действия по умолчанию
     query.addQueryItem("key", _key); // Ключ доступа
     query.addQueryItem("ts", QString("%1").arg(_ts)); // Номер последнего события
     query.addQueryItem("wait", "25"); // Максимум 25 секунд ожидания
-    query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
+    // query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
-    req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    // req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     QByteArray par="";
-    _manager->post(req,par);
+    //_manager->get(req);
     rep=_manager->get(req);
 
     //reply=_manager->get(QNetworkRequest(url));
@@ -53,6 +55,7 @@ void LongPoll::doLongPollRequest() {
  * @:param: reply -- указатель на ответ сервера.
  */
 void LongPoll::finished(QNetworkReply* reply) {
+    //qDebug()<<reply;
     QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
     if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
         QJsonObject jObj = jDoc.object().value("response").toObject();
@@ -66,18 +69,25 @@ void LongPoll::finished(QNetworkReply* reply) {
             if (jObj.value("failed").toInt() == 1) { // Проверка типа ошибки
                 _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
                 doLongPollRequest(); // Повторный запрос к Long Poll серверу
+                qDebug("Failed");
             } else {
                 _server.clear(); // Удаление адреса сервера
                 _key.clear(); // Удаление ключа доступа
                 _ts = ""; // Удаление номера последнего события
+                qDebug("Unknown error");
                 getLongPollServer(); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
+
             _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
             parseLongPollUpdates(jObj.value("updates").toArray()); // Разбор ответа от сервера
+
             doLongPollRequest(); // Повторный запрос к Long Poll серверу
+
         }
+
     }
+
     reply->deleteLater(); // Удаление ответа из памяти
 }
 /*
@@ -85,17 +95,60 @@ void LongPoll::finished(QNetworkReply* reply) {
  * @:param: updates -- массив с новыми событиями.
  */
 void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
-    for (auto value : updates) { // Цикл по всем событиям
+    /*for (auto value : updates) { // Цикл по всем событиям
         QJsonArray update = value.toArray(); // Получение объекта события
-        switch (update.at(0).toInt()) { // Проверка типа события
+       qDebug()<<update.at(4).toString();
+        switch (update.at(4).toInt()) { // Проверка типа события
         case NEW_MESSAGE:
             emit gotNewMessage(update.at(1).toInt());
             break;
         }
-    }
-}
+    }*/
+    for(int i=0; i<updates.size();++i)
+    {
+        QVariantList lama= updates.toVariantList();
+        QVariantList cur = lama.at(i).toList();
+
+        if ( cur.size() < 2 )
+            continue;
+
+        int type = cur.at(0).toInt();
+
+        if ( type == 4 )
+        {
+            if ( cur.count() < 6 )
+                continue;
+
+
+            int message_flags = cur.at(2).toInt();
+            QString message_text = cur.at(6).toString();
+            int user_id=cur.at(3).toInt();
+
+            if ( message_flags & 2 )
+            {
+                // ...
+            }
+            else
+            {
+                qDebug("New message");
+                emit gotNewMessage(user_id,message_text);
+            }
+        }
+    }}
 void LongPoll::settoken(QString toke)
 {
     token=toke;
 }
-
+void LongPoll::connectLongPoll()
+{
+    QString url("{$server}?act=a_check&key={$key}&ts={$ts}&wait=25 ");
+    url.replace("{$server}", _server);
+    url.replace("{$key}", _key);
+    url.replace("{$ts}", _ts);
+    _manager->get(QNetworkRequest(url));
+}
+/*void LongPoll::gotNewMessage(int id,QString msg)
+{
+    qDebug()<<id;
+    qDebug()<<msg;
+}*/
