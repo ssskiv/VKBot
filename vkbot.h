@@ -28,7 +28,7 @@ public:
 private slots:
     void vkClicked();
     void feditingFinished();
-    void newMes(int id,QString msg);
+    void newMes(const int id,const QString msg);
 };
 
 #endif // VKBOT_H

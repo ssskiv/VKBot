@@ -24,6 +24,7 @@ vkbot::vkbot(/*QWidget *parent*/)
     layout->addWidget(tokenf);
     layout->addWidget(notl);
     lb->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    status->setText(QString(lp->getts()));
     setLayout(layout);
     setWindowTitle("bot");
     setWindowIcon(QIcon(":/icons/icon.jpg"));
@@ -36,7 +37,7 @@ vkbot::vkbot(/*QWidget *parent*/)
        // lp->doLongPollRequest();
     //lp->parseLongPollUpdates();
         print("Started");
-        connect(lp,SIGNAL(&LongPoll::gotNewMessage),this,SLOT(vkbot::newMes));
+        connect(lp,SIGNAL(gotNewMessage(const int ,const QString )),this,SLOT(newMes(const int ,const QString )));
    // }
 }
 void vkbot::vkClicked()
@@ -62,7 +63,7 @@ void vkbot::feditingFinished()
     qDebug("Connected");
     // QNetworkReply* rep= lp->getrep();
     //lp->finished(rep);
-    lp->doLongPollRequest();
+   // lp->doLongPollRequest();
     print("Bot started");
 
 }

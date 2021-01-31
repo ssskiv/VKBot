@@ -15,7 +15,8 @@ class LongPoll: public QObject
 
     Q_OBJECT
     QNetworkAccessManager*_manager;
-    QString _server,_key,_ts,token;
+    QString _server,_key,token;
+    int _ts;
     QNetworkRequest req;
     QNetworkReply* rep;
     enum LONGPOLL_EVENTS {
@@ -33,7 +34,7 @@ public:
     void doLongPollRequest();
     void parseLongPollUpdates(const QJsonArray& updates);
     void connectLongPoll();
-    QString stat;
+    int getts();
     ~LongPoll(){
         delete _manager;
 
@@ -42,7 +43,7 @@ public:
 public slots:
     void finished(QNetworkReply* reply);
 signals:
-    void gotNewMessage(int id,QString msg);
+    void gotNewMessage(const int id,const QString msg);
 
 };
 

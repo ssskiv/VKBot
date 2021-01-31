@@ -19,7 +19,7 @@ void LongPoll::getLongPollServer()
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     request.setUrl(url);
     _manager->get(request); // Выполняется GET-запрос к серверу ВКонтакте
-
+    qDebug()<<url;
 
 }
 
@@ -29,19 +29,20 @@ void LongPoll::getLongPollServer()
 void LongPoll::doLongPollRequest() {
     QUrl url("https://" + _server); // Формирование адреса запроса
     QUrlQuery query;
-   // qDebug("Connecting....");
+    // qDebug("Connecting....");
     req.setUrl(url);
     query.addQueryItem("act", "a_check"); // Параметр действия по умолчанию
     query.addQueryItem("key", _key); // Ключ доступа
-    query.addQueryItem("ts", QString("%1").arg(_ts)); // Номер последнего события
+    query.addQueryItem("ts", QString("%1").arg(/*QString(*/_ts/*)*/)); // Номер последнего события
     query.addQueryItem("wait", "25"); // Максимум 25 секунд ожидания
     // query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
     // req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-    QByteArray par="";
+   // QByteArray par="";
     //_manager->get(req);
     rep=_manager->get(req);
+    qDebug()<<"Request"<<url;
 
     //reply=_manager->get(QNetworkRequest(url));
     // qDebug(reply);
@@ -57,6 +58,7 @@ void LongPoll::doLongPollRequest() {
 void LongPoll::finished(QNetworkReply* reply) {
     //qDebug()<<reply;
     QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
+    qDebug()<<jDoc.toVariant().toString();
     if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
         QJsonObject jObj = jDoc.object().value("response").toObject();
         _server = jObj.value("server").toString(); // Сохранение адреса сервера
@@ -67,18 +69,20 @@ void LongPoll::finished(QNetworkReply* reply) {
         QJsonObject jObj = jDoc.object();
         if (jObj.contains("failed")) { // Проверка на успешность запроса к серверу
             if (jObj.value("failed").toInt() == 1) { // Проверка типа ошибки
-                _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
+                _ts = jObj.value("ts").toInt()/*.toInt()*/; // Сохранение нового номера последнего события
                 doLongPollRequest(); // Повторный запрос к Long Poll серверу
-                qDebug("Failed");
+                qDebug("Failed - ts");
             } else {
                 _server.clear(); // Удаление адреса сервера
                 _key.clear(); // Удаление ключа доступа
-                _ts = ""; // Удаление номера последнего события
+                _ts= NULL; // Удаление номера последнего события
                 qDebug("Unknown error");
                 getLongPollServer(); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
-
+//qDebug()<<"All OK";
+            qDebug()<<"TS:"<<_ts/*jObj.value("ts").toString()*/;
+            qDebug()<<"qObj:"<<jObj;
             _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
             parseLongPollUpdates(jObj.value("updates").toArray()); // Разбор ответа от сервера
 
@@ -139,16 +143,20 @@ void LongPoll::settoken(QString toke)
 {
     token=toke;
 }
-void LongPoll::connectLongPoll()
+/*void LongPoll::connectLongPoll()
 {
     QString url("{$server}?act=a_check&key={$key}&ts={$ts}&wait=25 ");
     url.replace("{$server}", _server);
     url.replace("{$key}", _key);
     url.replace("{$ts}", _ts);
     _manager->get(QNetworkRequest(url));
-}
+}*/
 /*void LongPoll::gotNewMessage(int id,QString msg)
 {
     qDebug()<<id;
     qDebug()<<msg;
 }*/
+int LongPoll::getts()
+{
+    return _ts;
+}
