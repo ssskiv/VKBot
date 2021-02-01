@@ -33,8 +33,9 @@ void LongPoll::doLongPollRequest() {
     req.setUrl(url);
     query.addQueryItem("act", "a_check"); // Параметр действия по умолчанию
     query.addQueryItem("key", _key); // Ключ доступа
-    query.addQueryItem("ts", QString("%1").arg(/*QString(*/_ts/*)*/)); // Номер последнего события
     query.addQueryItem("wait", "25"); // Максимум 25 секунд ожидания
+    query.addQueryItem("ts", QString("%1").arg(/*QString(*/_ts/*)*/)); // Номер последнего события
+
     // query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
@@ -57,13 +58,15 @@ void LongPoll::doLongPollRequest() {
  */
 void LongPoll::finished(QNetworkReply* reply) {
     //qDebug()<<reply;
-    QJsonDocument jDoc = QJsonDocument::fromJson(reply->readAll()); // Преобразование ответа в JSON
-    qDebug()<<jDoc.toVariant().toString();
+    QByteArray data= reply->readAll();
+    QJsonDocument jDoc = QJsonDocument::fromJson(data); // Преобразование ответа в JSON
+    //QVariantMap map = QJsonDocument::fromJson(reply->readAll()).object().toVariantMap();
+  //  qDebug()<<jDoc.toVariant().toInt();
     if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
         QJsonObject jObj = jDoc.object().value("response").toObject();
         _server = jObj.value("server").toString(); // Сохранение адреса сервера
         _key = jObj.value("key").toString(); // Сохранение ключа доступа
-        _ts = jObj.value("ts").toInt(); // Сохранение номера последнего события
+       _ts  = jObj.value("ts").toInt(); // Сохранение номера последнего события
         doLongPollRequest(); // Открытие соединения с Long Poll сервером
     } else {
         QJsonObject jObj = jDoc.object();
@@ -75,15 +78,18 @@ void LongPoll::finished(QNetworkReply* reply) {
             } else {
                 _server.clear(); // Удаление адреса сервера
                 _key.clear(); // Удаление ключа доступа
-                _ts= NULL; // Удаление номера последнего события
+                _ts= 0; // Удаление номера последнего события
                 qDebug("Unknown error");
                 getLongPollServer(); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
 //qDebug()<<"All OK";
             qDebug()<<"TS:"<<_ts/*jObj.value("ts").toString()*/;
-            qDebug()<<"qObj:"<<jObj;
-            _ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
+            qDebug()<<"qObj:"<<jObj.value("ts").toString();
+            QJsonObject ob=jObj.value("response").toObject();
+            if(!ob.isEmpty())
+            _ts = ob.value("ts").toInt(); // Сохранение нового номера последнего события
+            qDebug()<<"NEW TS:"<<_ts;
             parseLongPollUpdates(jObj.value("updates").toArray()); // Разбор ответа от сервера
 
             doLongPollRequest(); // Повторный запрос к Long Poll серверу
@@ -158,5 +164,5 @@ void LongPoll::settoken(QString toke)
 }*/
 int LongPoll::getts()
 {
-    return _ts;
+    return _ts;//.toInt();
 }
