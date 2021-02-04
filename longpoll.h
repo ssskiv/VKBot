@@ -19,6 +19,7 @@ class LongPoll: public QObject
     int _ts;
     QNetworkRequest req;
     QNetworkReply* rep;
+    QJsonDocument upda;
     enum LONGPOLL_EVENTS {
         NEW_MESSAGE = 4, // Новое сообщение
         INPUT_MESSAGES_READ = 6, // Входящие сообщения прочитаны
@@ -32,7 +33,7 @@ public:
     void settoken(QString toke);
     void getLongPollServer();
     void doLongPollRequest();
-    void parseLongPollUpdates(const QJsonArray& updates);
+    void parseLongPollUpdates(/*const*/ /*QJsonDocument upd*/);
     void connectLongPoll();
     int getts();
     ~LongPoll(){

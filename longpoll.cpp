@@ -40,7 +40,7 @@ void LongPoll::doLongPollRequest() {
     url.setQuery(query); // Параметры запроса конкатенируются с адресом запроса
     // _manager->get(req); // Выполнение GET-запроса к Long Poll серверу
     // req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-   // QByteArray par="";
+    // QByteArray par="";
     //_manager->get(req);
     rep=_manager->get(req);
     qDebug()<<"Request"<<url;
@@ -58,15 +58,16 @@ void LongPoll::doLongPollRequest() {
  */
 void LongPoll::finished(QNetworkReply* reply) {
     //qDebug()<<reply;
+    //reply->open(QIODevice::ReadWrite);
     QByteArray data= reply->readAll();
-    QJsonDocument jDoc = QJsonDocument::fromJson(data); // Преобразование ответа в JSON
+    QJsonDocument jDoc( QJsonDocument::fromJson(data)); // Преобразование ответа в JSON
     //QVariantMap map = QJsonDocument::fromJson(reply->readAll()).object().toVariantMap();
-  //  qDebug()<<jDoc.toVariant().toInt();
+    //  qDebug()<<jDoc.toVariant().toInt();
     if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
         QJsonObject jObj = jDoc.object().value("response").toObject();
         _server = jObj.value("server").toString(); // Сохранение адреса сервера
         _key = jObj.value("key").toString(); // Сохранение ключа доступа
-       _ts  = jObj.value("ts").toInt(); // Сохранение номера последнего события
+        _ts  = jObj.value("ts").toInt(); // Сохранение номера последнего события
         doLongPollRequest(); // Открытие соединения с Long Poll сервером
     } else {
         QJsonObject jObj = jDoc.object();
@@ -83,14 +84,18 @@ void LongPoll::finished(QNetworkReply* reply) {
                 getLongPollServer(); // Запрос новой информации для соединения
             }
         } else { // Если запрос выполнился без ошибок
-//qDebug()<<"All OK";
-            qDebug()<<"TS:"<<_ts/*jObj.value("ts").toString()*/;
-            qDebug()<<"qObj:"<<jObj.value("ts").toString();
-            QJsonObject ob=jObj.value("response").toObject();
-            if(!ob.isEmpty())
-            _ts = ob.value("ts").toInt(); // Сохранение нового номера последнего события
-            qDebug()<<"NEW TS:"<<_ts;
-            parseLongPollUpdates(jObj.value("updates").toArray()); // Разбор ответа от сервера
+            // qDebug()<<"TS:"<<_ts/*jObj.value("ts").toString()*/;
+          //  QJsonObject ob=jObj.value("response").toObject();
+
+            if(!jObj.value("response").toObject().isEmpty()){
+                _ts = jObj.value("response").toObject().value("ts").toInt(); // Сохранение нового номера последнего события
+                //upd=jObj.value("updates").toArray();
+            }
+            //  else
+            // _ts = jObj.value("ts").toInt();
+            // qDebug()<<"NEW TS:"<<_ts;
+            upda=QJsonDocument::fromJson(data);
+            parseLongPollUpdates(); // Разбор ответа от сервера
 
             doLongPollRequest(); // Повторный запрос к Long Poll серверу
 
@@ -104,26 +109,36 @@ void LongPoll::finished(QNetworkReply* reply) {
  * Метод разбирает события, пришедшие от Long Poll сервера.
  * @:param: updates -- массив с новыми событиями.
  */
-void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
+void LongPoll::parseLongPollUpdates(/*const*/ /*QJsonDocument upd*/) {
     /*for (auto value : updates) { // Цикл по всем событиям
         QJsonArray update = value.toArray(); // Получение объекта события
-       qDebug()<<update.at(4).toString();
+        qDebug()<<update.at(4).toString();
         switch (update.at(4).toInt()) { // Проверка типа события
-        case NEW_MESSAGE:
-            emit gotNewMessage(update.at(1).toInt());
+        case 4:
+            qDebug("New message");
+            // emit gotNewMessage(update.at(1).toInt());
             break;
         }
     }*/
-    for(int i=0; i<updates.size();++i)
+    // QJsonArray updates =map.value("updates").toJsonArray();
+    /*  if ( updates.isEmpty() )
     {
-        QVariantList lama= updates.toVariantList();
-        QVariantList cur = lama.at(i).toList();
-
+        qDebug() << "NO UPDATES";
+        return;
+    }*/
+    // qDebug()<<"Updates:"<<updates.size();
+    QJsonArray updates=upda.object().value("updates").toArray();
+    qDebug()<<"Updates:"<<updates;
+    for(int i=0; i<updates.size();i++)
+    {
+        //QVariantList lama= updates.toVariantList();
+        QJsonArray cur = updates.at(i).toArray();
+        qDebug()<<"Updates:"<<updates;
         if ( cur.size() < 2 )
             continue;
 
         int type = cur.at(0).toInt();
-
+        qDebug()<<"Type:"<<type;
         if ( type == 4 )
         {
             if ( cur.count() < 6 )
@@ -144,7 +159,8 @@ void LongPoll::parseLongPollUpdates(const QJsonArray& updates) {
                 emit gotNewMessage(user_id,message_text);
             }
         }
-    }}
+    }
+}
 void LongPoll::settoken(QString toke)
 {
     token=toke;
