@@ -59,8 +59,9 @@ void LongPoll::doLongPollRequest() {
 void LongPoll::finished(QNetworkReply* reply) {
     //qDebug()<<reply;
     //reply->open(QIODevice::ReadWrite);
-    QByteArray data= reply->readAll();
-    QJsonDocument jDoc( QJsonDocument::fromJson(data)); // Преобразование ответа в JSON
+   // QByteArray data= reply->readAll();
+    QJsonArray upd;
+    QJsonDocument jDoc( QJsonDocument::fromJson(reply->readAll())); // Преобразование ответа в JSON
     //QVariantMap map = QJsonDocument::fromJson(reply->readAll()).object().toVariantMap();
     //  qDebug()<<jDoc.toVariant().toInt();
     if (_server.isNull() || _server.isEmpty()) { // Проверка на наличие сохранённых данных
@@ -94,9 +95,13 @@ void LongPoll::finished(QNetworkReply* reply) {
             //  else
             // _ts = jObj.value("ts").toInt();
             // qDebug()<<"NEW TS:"<<_ts;
-            upda=QJsonDocument::fromJson(data);
-            parseLongPollUpdates(); // Разбор ответа от сервера
+          //  upda=&jDoc;
 
+           // qDebug()<<upda->isNull();
+            /*if(!jObj.value("updates").toObject().isEmpty()){*/
+            upd= jObj.value("updates").toArray();
+            parseLongPollUpdates(&upd); // Разбор ответа от сервера
+//}
             doLongPollRequest(); // Повторный запрос к Long Poll серверу
 
         }
@@ -109,7 +114,7 @@ void LongPoll::finished(QNetworkReply* reply) {
  * Метод разбирает события, пришедшие от Long Poll сервера.
  * @:param: updates -- массив с новыми событиями.
  */
-void LongPoll::parseLongPollUpdates(/*const*/ /*QJsonDocument upd*/) {
+void LongPoll::parseLongPollUpdates(const QJsonArray* update/*const*/ /*QJsonDocument upd*/) {
     /*for (auto value : updates) { // Цикл по всем событиям
         QJsonArray update = value.toArray(); // Получение объекта события
         qDebug()<<update.at(4).toString();
@@ -127,8 +132,10 @@ void LongPoll::parseLongPollUpdates(/*const*/ /*QJsonDocument upd*/) {
         return;
     }*/
     // qDebug()<<"Updates:"<<updates.size();
-    QJsonArray updates=upda.object().value("updates").toArray();
-    qDebug()<<"Updates:"<<updates;
+    //QJsonValue obj =upda->object().value("updates");
+   // QJsonArray updates=upda->object().value("updates").toArray();
+    QJsonArray updates=*update;
+    qDebug()<<"Updates:"<<updates.isEmpty();
     for(int i=0; i<updates.size();i++)
     {
         //QVariantList lama= updates.toVariantList();

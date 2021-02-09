@@ -33,7 +33,7 @@ public:
     void settoken(QString toke);
     void getLongPollServer();
     void doLongPollRequest();
-    void parseLongPollUpdates(/*const*/ /*QJsonDocument upd*/);
+    void parseLongPollUpdates(const QJsonArray* updates/*const*/ /*QJsonDocument upd*/);
     void connectLongPoll();
     int getts();
     ~LongPoll(){
@@ -44,6 +44,7 @@ public:
 public slots:
     void finished(QNetworkReply* reply);
 signals:
+
     void gotNewMessage(const int id,const QString msg);
 
 };

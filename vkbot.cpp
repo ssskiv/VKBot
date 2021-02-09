@@ -38,7 +38,8 @@ vkbot::vkbot(/*QWidget *parent*/)
     //lp->parseLongPollUpdates();
         print("Started");
         connect(lp,SIGNAL(gotNewMessage(const int ,const QString )),this,SLOT(newMes(const int ,const QString )));
-   // }
+
+        // }
 }
 void vkbot::vkClicked()
 {
