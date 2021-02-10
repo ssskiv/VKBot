@@ -5,10 +5,6 @@
 #include "vkbot.h"
 //void cprint(QString text,QLabel* cont);
 
-
-
-
-
 //QString ct;
 //bool cld;
 
@@ -54,7 +50,6 @@ int main(int argc, char *argv[])
     w.show();*/
     qApp->setStyle(QStyleFactory::create("Fusion"));
     return a.exec();
-
 }
 /*void cprint(QString text,QLabel* cont)
 {

@@ -6,16 +6,16 @@ vkbot::~vkbot()
 vkbot::vkbot(/*QWidget *parent*/)
 {
     QWidget w;
-    QVBoxLayout *layout= new QVBoxLayout;
-    QHBoxLayout *hlay= new QHBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
+    QHBoxLayout *hlay = new QHBoxLayout;
     pal.setColor(QPalette::Window, Qt::gray);
     //pal.setColor(QPalette::WindowText, Qt::green);
     pal.setColor(QPalette::Button, Qt::darkCyan);
     //pal.setColor(QPalette::, Qt::darkCyan);
     qApp->setPalette(pal);
-    Button *vk=createButton("Изменить ключ доступа",SLOT(vkClicked()));
-    Button *vsk=createButton("Запустить бота",SLOT(feditingFinished()));
-   // connect(tokenf,SIGNAL(editingFinished()),this,SLOT(feditingFinished()));
+    Button *vk = createButton("Изменить ключ доступа", SLOT(vkClicked()));
+    Button *vsk = createButton("Запустить бота", SLOT(feditingFinished()));
+    // connect(tokenf,SIGNAL(editingFinished()),this,SLOT(feditingFinished()));
     hlay->addWidget(vk);
     hlay->addWidget(vsk);
     layout->addLayout(hlay);
@@ -28,18 +28,18 @@ vkbot::vkbot(/*QWidget *parent*/)
     setLayout(layout);
     setWindowTitle("bot");
     setWindowIcon(QIcon(":/icons/icon.jpg"));
-    setMaximumSize(1920,1080);
+    setMaximumSize(1920, 1080);
     setMinimumSize(640, 480);
-   // if(token!=nullptr)
-   // {
-       // lp->settoken(token);
-       // lp->getLongPollServer();
-       // lp->doLongPollRequest();
+    // if(token!=nullptr)
+    // {
+    // lp->settoken(token);
+    // lp->getLongPollServer();
+    // lp->doLongPollRequest();
     //lp->parseLongPollUpdates();
-        print("Started");
-        connect(lp,SIGNAL(gotNewMessage(const int ,const QString )),this,SLOT(newMes(const int ,const QString )));
+    print("Started");
+    connect(lp, SIGNAL(gotNewMessage(const int, const QString)), this, SLOT(newMes(const int, const QString)));
 
-        // }
+    // }
 }
 void vkbot::vkClicked()
 {
@@ -54,23 +54,22 @@ Button *vkbot::createButton(const QString &text, const char *member)
 void vkbot::feditingFinished()
 {
     tokenf->setEnabled(false);
-    token=tokenf->text();
+    token = tokenf->text();
     lb->setText(token);
 
-    print("Ключ доступа:"+token);
+    print("Ключ доступа:" + token);
     lp->settoken(token);
     lp->getLongPollServer();
-   // lp->connectLongPoll();
+    // lp->connectLongPoll();
     qDebug("Connected");
     // QNetworkReply* rep= lp->getrep();
     //lp->finished(rep);
-   // lp->doLongPollRequest();
+    // lp->doLongPollRequest();
     print("Bot started");
-
 }
 void vkbot::print(QString text)
 {
-    log+=text+'\n';
+    log += text + '\n';
     notl->setText(log);
 }
 void vkbot::send(QString mesg, QString user_id)
@@ -78,16 +77,15 @@ void vkbot::send(QString mesg, QString user_id)
     QUrl url("https://api.vk.com/method/messages.send");
     QUrlQuery query;
     query.addQueryItem("user_id", user_id);
-    query.addQueryItem("message",mesg);
-    query.addQueryItem("access_token",token);
-    query.addQueryItem("v","5.90");
+    query.addQueryItem("message", mesg);
+    query.addQueryItem("access_token", token);
+    query.addQueryItem("v", "5.90");
     query.addQueryItem("random_id", "0");
     url.setQuery(query);
     print(url.toString());
     manager->get(QNetworkRequest(url));
 }
-void vkbot::newMes(int id,QString msg)
+void vkbot::newMes(int id, QString msg)
 {
-print(QString(id)+": "+msg);
+    print(QString(id) + ": " + msg);
 }
-
