@@ -16,7 +16,7 @@ class LongPoll : public QObject
     Q_OBJECT
     QNetworkAccessManager *manager;
     QString server, key, token;
-    QString ts;
+    int ts;
     QNetworkRequest req;
     QNetworkReply *rep;
     QJsonDocument upda;

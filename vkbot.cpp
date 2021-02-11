@@ -72,11 +72,11 @@ void vkbot::print(QString text)
     log += text + '\n';
     notl->setText(log);
 }
-void vkbot::send(QString mesg, QString user_id)
+void vkbot::send(QString mesg, int user_id)
 {
     QUrl url("https://api.vk.com/method/messages.send");
     QUrlQuery query;
-    query.addQueryItem("user_id", user_id);
+    query.addQueryItem("user_id", QString::number(user_id));
     query.addQueryItem("message", mesg);
     query.addQueryItem("access_token", token);
     query.addQueryItem("v", "5.90");
@@ -88,4 +88,7 @@ void vkbot::send(QString mesg, QString user_id)
 void vkbot::newMes(int id, QString msg)
 {
     print(QString(id) + ": " + msg);
+    if(msg=="02")
+        send("zero-two",id);
+   // send(msg,id);
 }
