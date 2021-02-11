@@ -25,7 +25,7 @@ public:
     vkbot(/*QWidget *parent = nullptr*/);
     ~vkbot();
     void print(QString text);
-    void send(QString mesg, int user_id);
+    void send(QString mesg, int user_id,QString atchmnt=0);
 private slots:
     void vkClicked();
     void feditingFinished();

@@ -72,12 +72,14 @@ void vkbot::print(QString text)
     log += text + '\n';
     notl->setText(log);
 }
-void vkbot::send(QString mesg, int user_id)
+void vkbot::send(QString mesg, int user_id, QString atchmnt)
 {
     QUrl url("https://api.vk.com/method/messages.send");
     QUrlQuery query;
     query.addQueryItem("user_id", QString::number(user_id));
     query.addQueryItem("message", mesg);
+    if(!atchmnt.isNull())
+    query.addQueryItem("attachment", atchmnt);
     query.addQueryItem("access_token", token);
     query.addQueryItem("v", "5.90");
     query.addQueryItem("random_id", "0");
@@ -89,6 +91,6 @@ void vkbot::newMes(int id, QString msg)
 {
     print(QString(id) + ": " + msg);
     if(msg=="02")
-        send("zero-two",id);
+        send("Zero Two",id,"photo-167643469_457241195");
    // send(msg,id);
 }
