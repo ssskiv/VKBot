@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    vkbot bot;
+    vkBsot bot;
     bot.show();
     /*QWidget w;
     QHBoxLayout layout(&w);

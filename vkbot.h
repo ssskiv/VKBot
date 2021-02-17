@@ -6,7 +6,7 @@
 #include <QPalette>
 #include <QtWidgets>
 #include <QApplication>
-class vkbot : public QWidget
+class vkBot : public QWidget
 {
     Q_OBJECT
     QPalette pal;
@@ -18,14 +18,16 @@ class vkbot : public QWidget
     LongPoll *lp = new LongPoll;
     QString token = nullptr;
     QString log;
+    QVBoxLayout *layout = new QVBoxLayout;
+    QHBoxLayout *hlay = new QHBoxLayout;
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     bool vkclicked = false;
 
 public:
-    vkbot(/*QWidget *parent = nullptr*/);
-    ~vkbot();
+    vkBot();
+    ~vkBot();
     void print(QString text);
-    void send(QString mesg, int user_id,QString atchmnt=0);
+    void send(QString mesg, int user_id, QString atchmnt = 0);
 private slots:
     void vkClicked();
     void feditingFinished();

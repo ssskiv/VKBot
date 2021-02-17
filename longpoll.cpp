@@ -27,19 +27,11 @@ void LongPoll::getLongPollServer()
  */
 void LongPoll::doLongPollRequest()
 {
-    QString url("https://{$server}?act=a_check&key={$key}&ts={$ts}&wait=25" ); // Формирование адреса запроса
+    QString url("https://{$server}?act=a_check&key={$key}&ts={$ts}&wait=25"); // Формирование адреса запроса
     url.replace("{$server}", server);
     url.replace("{$key}", key);
     url.replace("{$ts}", QString::number(ts));
-    /* QUrlQuery query;
-    req.setUrl(url);
-    query.addQueryItem("act", "a_check");                               // Параметр действия по умолчанию
-    query.addQueryItem("key", key);                                     // Ключ доступа
-    query.addQueryItem("wait", "25");                                   // Максимум 25 секунд ожидания
-    query.addQueryItem("ts", QString("%1").arg(QString( ts*/ /*)*//*));*/ // Номер последнего события
-    // query.addQueryItem("mode", "10"); // Получение вложений и расширенного набора событий
-   // url.setQuery(query);*/ // Параметры запроса конкатенируются с адресом запроса
-    manager->get(QNetworkRequest(QUrl(url))/*req*/);
+    manager->get(QNetworkRequest(QUrl(url)) /*req*/);
     qDebug() << "Request" << url;
 }
 /*
@@ -56,8 +48,8 @@ void LongPoll::finished(QNetworkReply *reply)
         server = jObj.value("server").toString(); // Сохранение адреса сервера
         key = jObj.value("key").toString();       // Сохранение ключа доступа
         ts = jObj.value("ts").toInt();
-        qDebug("NOT OK");// Сохранение номера последнего события
-        doLongPollRequest();                      // Открытие соединения с Long Poll сервером
+        qDebug("NOT OK");    // Сохранение номера последнего события
+        doLongPollRequest(); // Открытие соединения с Long Poll сервером
     }
     else
     {
@@ -65,9 +57,9 @@ void LongPoll::finished(QNetworkReply *reply)
         if (jObj.contains("failed"))
         { // Проверка на успешность запроса к серверу
             if (jObj.value("failed").toInt() == 1)
-            {                                               // Проверка типа ошибки
-                ts = jObj.value("ts").toInt() /*.toInt()*/; // Сохранение нового номера последнего события
-                doLongPollRequest();                        // Повторный запрос к Long Poll серверу
+            {                                  // Проверка типа ошибки
+                ts = jObj.value("ts").toInt(); // Сохранение нового номера последнего события
+                doLongPollRequest();           // Повторный запрос к Long Poll серверу
                 qDebug("Failed - ts");
             }
             else
@@ -81,12 +73,10 @@ void LongPoll::finished(QNetworkReply *reply)
         }
         else
         { // Если запрос выполнился без ошибок
-           // if (!jObj.value("ts").toObject().isEmpty()){
-                ts = jObj.value("ts").toInt();
-           // }
+            ts = jObj.value("ts").toInt();
             parseLongPollUpdates(jDoc.object().value("updates").toArray()); // Разбор ответа от сервера
             jDoc.object().value("updates").toString().clear();
-            doLongPollRequest();                                            // Повторный запрос к Long Poll серверу
+            doLongPollRequest(); // Повторный запрос к Long Poll серверу
         }
     }
 
@@ -98,31 +88,25 @@ void LongPoll::finished(QNetworkReply *reply)
  */
 void LongPoll::parseLongPollUpdates(const QJsonArray updates)
 {
-
-   // qDebug() << "Updates:" << !updates.isEmpty();
     if (!updates.isEmpty())
     {
         for (int i = 0; i < updates.size(); i++)
         {
             QJsonArray cur = updates.at(i).toArray();
-         //   qDebug() << "Updates:" << updates;
             if (cur.size() < 2)
                 continue;
 
             int type = cur.at(0).toInt();
-          //  qDebug() << "Type:" << type;
             if (type == 4)
             {
                 if (cur.count() < 6)
                     continue;
-
                 int message_flags = cur.at(2).toInt();
                 QString message_text = cur.at(6).toString();
                 int user_id = cur.at(3).toInt();
-
                 if (message_flags & 2)
                 {
-                    // ...
+                    //? ...
                 }
                 else
                 {
@@ -133,11 +117,11 @@ void LongPoll::parseLongPollUpdates(const QJsonArray updates)
         }
     }
 }
-void LongPoll::settoken(QString toke)
+void LongPoll::setToken(QString _token)
 {
-    token = toke;
+    token = _token;
 }
 int LongPoll::getts()
 {
-    return ts; //.toInt();
+    return ts;
 }

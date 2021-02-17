@@ -1,21 +1,23 @@
 #include "vkbot.h"
-vkbot::~vkbot()
+vkBot::~vkBot()
 {
-    //delete
+    delete lb;
+    delete status;
+    delete notl;
+    delete tokenf;
+    delete lp;
+    delete manager;
+    delete layout;
+    delete hlay;
 }
-vkbot::vkbot(/*QWidget *parent*/)
+vkBot::vkBot()
 {
     QWidget w;
-    QVBoxLayout *layout = new QVBoxLayout;
-    QHBoxLayout *hlay = new QHBoxLayout;
     pal.setColor(QPalette::Window, Qt::gray);
-    //pal.setColor(QPalette::WindowText, Qt::green);
     pal.setColor(QPalette::Button, Qt::darkCyan);
-    //pal.setColor(QPalette::, Qt::darkCyan);
     qApp->setPalette(pal);
     Button *vk = createButton("Изменить ключ доступа", SLOT(vkClicked()));
     Button *vsk = createButton("Запустить бота", SLOT(feditingFinished()));
-    // connect(tokenf,SIGNAL(editingFinished()),this,SLOT(feditingFinished()));
     hlay->addWidget(vk);
     hlay->addWidget(vsk);
     layout->addLayout(hlay);
@@ -30,56 +32,43 @@ vkbot::vkbot(/*QWidget *parent*/)
     setWindowIcon(QIcon(":/icons/icon.jpg"));
     setMaximumSize(1920, 1080);
     setMinimumSize(640, 480);
-    // if(token!=nullptr)
-    // {
-    // lp->settoken(token);
-    // lp->getLongPollServer();
-    // lp->doLongPollRequest();
-    //lp->parseLongPollUpdates();
     print("Started");
     connect(lp, SIGNAL(gotNewMessage(const int, const QString)), this, SLOT(newMes(const int, const QString)));
-
-    // }
 }
-void vkbot::vkClicked()
+void vkBot::vkClicked()
 {
     tokenf->setEnabled(true);
 }
-Button *vkbot::createButton(const QString &text, const char *member)
+Button *vkBot::createButton(const QString &text, const char *member)
 {
     Button *button = new Button(text);
     connect(button, SIGNAL(clicked()), this, member);
     return button;
 }
-void vkbot::feditingFinished()
+void vkBot::feditingFinished()
 {
     tokenf->setEnabled(false);
     token = tokenf->text();
     lb->setText(token);
-
     print("Ключ доступа:" + token);
-    lp->settoken(token);
+    lp->setToken(token);
     lp->getLongPollServer();
-    // lp->connectLongPoll();
     qDebug("Connected");
-    // QNetworkReply* rep= lp->getrep();
-    //lp->finished(rep);
-    // lp->doLongPollRequest();
     print("Bot started");
 }
-void vkbot::print(QString text)
+void vkBot::print(QString text)
 {
     log += text + '\n';
     notl->setText(log);
 }
-void vkbot::send(QString mesg, int user_id, QString atchmnt)
+void vkBot::send(QString mesg, int user_id, QString atchmnt)
 {
     QUrl url("https://api.vk.com/method/messages.send");
     QUrlQuery query;
     query.addQueryItem("user_id", QString::number(user_id));
     query.addQueryItem("message", mesg);
-    if(!atchmnt.isNull())
-    query.addQueryItem("attachment", atchmnt);
+    if (!atchmnt.isNull())
+        query.addQueryItem("attachment", atchmnt);
     query.addQueryItem("access_token", token);
     query.addQueryItem("v", "5.90");
     query.addQueryItem("random_id", "0");
@@ -87,10 +76,9 @@ void vkbot::send(QString mesg, int user_id, QString atchmnt)
     print(url.toString());
     manager->get(QNetworkRequest(url));
 }
-void vkbot::newMes(int id, QString msg)
+void vkBot::newMes(int id, QString msg)
 {
     print(QString(id) + ": " + msg);
-    if(msg=="02")
-        send("Zero Two",id,"photo-167643469_457241195");
-   // send(msg,id);
+    if (msg == "02")
+        send("Zero Two", id, "photo-167643469_457241195");
 }
